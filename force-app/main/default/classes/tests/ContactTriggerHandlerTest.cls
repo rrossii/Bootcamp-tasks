@@ -17,8 +17,8 @@ public class ContactTriggerHandlerTest {
     @isTest
     static void testInsertingMoreThatFiveContactsInAccount() {
         Account account = [SELECT Id FROM Account];
-        Integer numOfContactsOnAccount = ContactUtility.numberOfExistingContactsOnAccount(account.Id);
-        System.assertEquals(5, numOfContactsOnAccount);
+        Map<Id, Integer> accountsAndNumberOfRelatedContacts = ContactUtility.numberOfExistingContactsOnAccounts(new List<Id>{account.Id});
+        System.assertEquals(5, accountsAndNumberOfRelatedContacts.get(account.Id));
 
         Test.startTest();
         Contact contact = new Contact(LastName='Last test contact ', AccountId = account.Id);
