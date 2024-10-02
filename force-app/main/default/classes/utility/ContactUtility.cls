@@ -1,12 +1,25 @@
 public with sharing class ContactUtility {
-    public static Integer numberOfExistingContactsOnAccount(Id accountId) {
-        List<AggregateResult> result = [
+    public static Map<Id, Integer> numberOfExistingContactsOnAccounts(List<Id> accountIds) {
+        List<AggregateResult> accountsAndNumOfContacts = [
             SELECT AccountId, COUNT(Id) ContactCount FROM Contact 
-            WHERE AccountId =:accountId GROUP BY AccountId];
-        if (result.isEmpty()) {
-            return 0;
+            WHERE AccountId IN :accountIds GROUP BY AccountId
+        ];
+        
+        Map<Id, Integer> accountsAndNumberOfRelatedContacts = new Map<Id, Integer>();
+        for (AggregateResult aggResult : accountsAndNumOfContacts) {
+            Id currentAccId = (Id)aggResult.get('AccountId');
+            Integer numberOfContactsForCurrentAcc = (Integer)aggResult.get('ContactCount');
+
+            accountsAndNumberOfRelatedContacts.put(currentAccId, numberOfContactsForCurrentAcc);
         }
-        return (Integer)result[0].get('ContactCount');
+
+        for (Id accountId : accountIds) {
+            if (!accountsAndNumberOfRelatedContacts.containsKey(accountId)) {
+                accountsAndNumberOfRelatedContacts.put(accountId, 0);
+            }
+        }
+
+        return accountsAndNumberOfRelatedContacts;
     }
 
     public static void updateDueDateForEachContact(List<Contact> contacts) {
