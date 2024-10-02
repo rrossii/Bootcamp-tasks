@@ -1,17 +1,4 @@
 public with sharing class ContactTriggerHandler extends TriggerHandler {
-    // public override void beforeInsert() {
-    //     List<Contact> contactsToInsert = Trigger.new;
-
-    //     for (Contact contact : contactsToInsert) {
-    //         if (contact.AccountId != null) {
-    //             Integer numOfContactsOnAccount = ContactUtility.numberOfExistingContactsOnAccount(contact.AccountId);
-    //             if (numOfContactsOnAccount == 5) {
-    //                 contact.addError('This account already has 5 contacts.');
-    //             }
-    //         }
-    //     }
-    // }
-
     public override void beforeInsert() {
         List<Contact> contactsToInsert = Trigger.new;
         List<Contact> contactsWithAccount = new List<Contact>();
@@ -29,20 +16,11 @@ public with sharing class ContactTriggerHandler extends TriggerHandler {
             accountsAndNumberOfRelatedContacts = ContactUtility.numberOfExistingContactsOnAccounts(accountIds);
         }
 
-        // for (Contact contact : contactsWithAccount) {
-        //     if (accountsAndNumberOfRelatedContacts.containsKey(contact.AccountId)) {
-        //         if (accountsAndNumberOfRelatedContacts.get(contact.AccountId) == 5) {
-        //             contact.addError('This account already has 5 contacts.');
-        //         }
-        //     }
-        // }
-
         for (Contact contact : contactsWithAccount) {
             Integer currentContactNumber = accountsAndNumberOfRelatedContacts.get(contact.AccountId);
             if (currentContactNumber == 5) {
                 contact.addError('This account already has 5 contacts.');
             } 
-
         }
     }
 }
