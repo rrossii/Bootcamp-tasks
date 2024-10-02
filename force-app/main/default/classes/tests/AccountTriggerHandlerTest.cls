@@ -16,13 +16,20 @@ private class AccountTriggerHandlerTest {
 
     @isTest
     static void testSetUpdateContactRecordsCheckboxToTrue() {
+        Account account = [
+            SELECT Id, Update_Contact_Records__c FROM Account 
+            WHERE Name='Test account'
+        ];
+
         Test.startTest();
-        Account account = [SELECT Id, Update_Contact_Records__c FROM Account WHERE Name='Test account'];
         account.Update_Contact_Records__c = True;
         update account;
         Test.stopTest();
 
-        List<Contact> contacts = [SELECT Id, Due_Date__c FROM Contact WHERE AccountId =:account.Id];
+        List<Contact> contacts = [
+            SELECT Id, Due_Date__c FROM Contact 
+            WHERE AccountId =:account.Id
+        ];
         Date startDate = System.today();
         Integer numberOfWorkDaysToAdd = 3;
 
@@ -31,7 +38,5 @@ private class AccountTriggerHandlerTest {
             System.assertEquals(expectedDate, contact.Due_Date__c);
             startDate = expectedDate;
         }
-
-
     }
 }
