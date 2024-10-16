@@ -1,0 +1,34 @@
+<aura:component controller="ContactFilterController" implements="force:hasRecordId, flexipage:availableForAllPageTypes" access="global">
+    <aura:attribute name="recordId" type="Id" />
+    <aura:attribute name="contacts" type="List" />
+    <aura:attribute name="dateFrom" type="Date" />
+    <aura:attribute name="dateTo" type="Date" />
+    <aura:attribute name="type" type="String" />
+    <aura:attribute name="types" type="String" />
+    <aura:attribute name="columns" type="List" />
+
+    <aura:handler name="init" value="{!this}" action="{!c.init}" />
+
+    <lightning:card title="Contacts Info">
+        <lightning:input label="From" type="date" value="{!v.dateFrom}" />
+        <lightning:input label="To" type="date" value="{!v.dateTo}" />
+
+        <lightning:select label="Type" value="{!v.type}">
+            <option text="Choose one" value="" disabled="true"/>
+            <aura:iteration items="{!v.types}" var="typeOption">
+                <option text="{!typeOption}" value="{!typeOption}"/>
+            </aura:iteration>
+        </lightning:select>
+
+        <lightning:button label="Run" variant="brand" onclick="{!c.getContacts}" />
+
+        <aura:if isTrue="{!not(empty(v.contacts))}">
+            <lightning:datatable
+            data="{!v.contacts}"
+            columns="{!v.columns}"
+            keyField="Id"
+            hideCheckboxColumn="true" />
+        </aura:if>
+    </lightning:card>
+
+</aura:component>	
