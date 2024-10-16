@@ -1,5 +1,11 @@
 ({
-    init : function(component) {
+    init : function(component) {    
+        // set record ID from URL
+        var params = new URLSearchParams(window.location.search);
+        var recordId = params.get('c__recordId');
+        component.set("v.recordId", recordId);
+        console.log("Record ID after setting: " + recordId);
+
         component.set("v.columns", [
             {label:"First Name", fieldName:"FirstName", type:"text"},
             {label:"Last Name", fieldName:"LastName", type:"text"},
@@ -38,7 +44,7 @@
         action.setCallback(this, function(response) {
             if (response.getState() === "SUCCESS") {
                 component.set("v.contacts", response.getReturnValue());
-                
+
                 // logs
                 console.log("Got contacts successfully");
                 console.log(response.getReturnValue());
@@ -49,5 +55,9 @@
         })
 
         $A.enqueueAction(action);
+    },
+
+    refresh : function() {
+        $A.get('e.force:refreshView').fire();
     }
 })

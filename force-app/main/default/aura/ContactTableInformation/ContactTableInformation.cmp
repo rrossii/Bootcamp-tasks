@@ -1,5 +1,8 @@
-<aura:component controller="ContactFilterController" implements="force:hasRecordId, flexipage:availableForAllPageTypes" access="global">
+<aura:component controller="ContactFilterController" 
+    implements="force:hasRecordId,force:appHostable,lightning:isUrlAddressable,flexipage:availableForAllPageTypes" 
+    access="global">
     <aura:attribute name="recordId" type="Id" />
+    <aura:attribute name="Account" type="Account" />
     <aura:attribute name="contacts" type="List" />
     <aura:attribute name="dateFrom" type="Date" />
     <aura:attribute name="dateTo" type="Date" />
@@ -7,28 +10,50 @@
     <aura:attribute name="types" type="String" />
     <aura:attribute name="columns" type="List" />
 
+    <force:recordData aura:id="accountRecord"
+                  recordId="{!v.recordId}"
+                  targetFields="{!v.Account}"
+                  layoutType="FULL"
+                  />
+
     <aura:handler name="init" value="{!this}" action="{!c.init}" />
+    <aura:handler name="change" value="{!v.pageReference}" action="{!c.refresh}" />
+    <p>Record id:{!v.recordId}</p>
+    
 
-    <lightning:card title="Contacts Info">
-        <lightning:input label="From" type="date" value="{!v.dateFrom}" />
-        <lightning:input label="To" type="date" value="{!v.dateTo}" />
+    <lightning:card title="{!'Contacts Info for ' + v.Account.Name}">
+        <div class="slds-m-left_small slds-m-right_small">
 
-        <lightning:select label="Type" value="{!v.type}">
-            <option text="Choose one" value="" disabled="true"/>
-            <aura:iteration items="{!v.types}" var="typeOption">
-                <option text="{!typeOption}" value="{!typeOption}"/>
-            </aura:iteration>
-        </lightning:select>
+            <div class="slds-grid slds-gutters">
+                <div class="slds-col slds-size_1-of-2">
+                    <lightning:input label="From" type="date" value="{!v.dateFrom}" />
+                </div>
+                <div class="slds-col slds-size_1-of-2">
+                    <lightning:input label="To" type="date" value="{!v.dateTo}" />
+                </div>
+            </div>
 
-        <lightning:button label="Run" variant="brand" onclick="{!c.getContacts}" />
+            <lightning:select label="Type" value="{!v.type}">
+                <option text="Choose one" value="" disabled="true"/>
+                <aura:iteration items="{!v.types}" var="typeOption">
+                    <option text="{!typeOption}" value="{!typeOption}"/>
+                </aura:iteration>
+            </lightning:select>
+        </div>
 
-        <aura:if isTrue="{!not(empty(v.contacts))}">
-            <lightning:datatable
-            data="{!v.contacts}"
-            columns="{!v.columns}"
-            keyField="Id"
-            hideCheckboxColumn="true" />
-        </aura:if>
+        <div class="slds-align_absolute-center slds-m-top_small">
+            <lightning:button label="Run" variant="brand" onclick="{!c.getContacts}" />
+        </div>
+
+        <div class="slds-align_absolute-center slds-m-top_small slds-m-right_small">
+            <aura:if isTrue="{!not(empty(v.contacts))}">
+                <lightning:datatable
+                data="{!v.contacts}"
+                columns="{!v.columns}"
+                keyField="Id"
+                hideCheckboxColumn="true" />
+            </aura:if>
+        </div>
     </lightning:card>
 
 </aura:component>	
