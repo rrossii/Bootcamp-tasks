@@ -57,6 +57,28 @@
         $A.enqueueAction(action);
     },
 
+    printContacts: function(component) {
+        var dateFrom = component.get("v.dateFrom");
+        var dateTo = component.get("v.dateTo");
+        var type = component.get("v.type");
+        var accountId = component.get("v.recordId");
+
+        dateFrom = dateFrom ? dateFrom : '';
+        dateTo = dateTo ? dateTo : '';
+
+        console.log("From:", dateFrom);
+        console.log("to:", dateTo);
+        console.log("type:", type);
+        console.log("accountId:", accountId);
+
+        var urlEvent = $A.get("e.force:navigateToURL");
+        urlEvent.setParams({
+            "url": "/apex/ContactsTable?dateFrom=" + dateFrom + "&dateTo=" + dateTo + "&type=" + type + "&recordId=" + accountId
+        });
+
+        urlEvent.fire();
+    },
+
     refresh : function() {
         $A.get('e.force:refreshView').fire();
     }

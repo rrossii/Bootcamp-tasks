@@ -54,6 +54,10 @@
                 hideCheckboxColumn="true" />
             </aura:if>
         </div>
+
+        <div class="slds-align_absolute-center slds-m-top_small">
+            <lightning:button label="Print" onclick="{!c.printContacts}" variant="neutral" />
+        </div>
     </lightning:card>
 
 </aura:component>	
