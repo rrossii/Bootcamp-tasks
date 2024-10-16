@@ -1,4 +1,18 @@
 public with sharing class ContactFilterController {
+    public List<Contact> contacts { get; set; }
+
+    public ContactFilterController() {
+        String dateFrom = ApexPages.currentPage().getParameters().get('dateFrom');
+        String dateTo = ApexPages.currentPage().getParameters().get('dateTo');
+        String type = ApexPages.currentPage().getParameters().get('type');
+        String accountId = ApexPages.currentPage().getParameters().get('recordId');
+
+        Date dateFromParsed = (dateFrom != null && dateFrom != '') ? Date.valueOf(dateFrom) : null;
+        Date dateToParsed = (dateTo != null && dateTo != '') ? Date.valueOf(dateTo) : null;
+        
+        contacts = getFilteredContacts(accountId, dateFromParsed, dateToParsed, type);
+    }
+
     @AuraEnabled
     public static List<Contact> getFilteredContacts(Id accountId, Date dateFrom, Date dateTo, String type) {
         try {
