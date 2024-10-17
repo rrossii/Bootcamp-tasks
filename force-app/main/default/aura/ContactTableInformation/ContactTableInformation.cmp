@@ -52,12 +52,18 @@
                 columns="{!v.columns}"
                 keyField="Id"
                 hideCheckboxColumn="true" />
+
+                <aura:set attribute="else">
+                    <h4>There are no contacts with these params.</h4>
+                </aura:set>
             </aura:if>
         </div>
 
-        <div class="slds-align_absolute-center slds-m-top_small">
-            <lightning:button label="Print" onclick="{!c.printContacts}" variant="neutral" />
-        </div>
+        <aura:if isTrue="{!not(empty(v.contacts))}">
+            <div class="slds-align_absolute-center slds-m-top_small">
+                <lightning:button label="Print" onclick="{!c.printContacts}" variant="neutral" />
+            </div>
+        </aura:if>
     </lightning:card>
 
 </aura:component>	

@@ -65,11 +65,7 @@
         console.log("type:", type);
         console.log("accountId:", accountId);
 
-        var urlEvent = $A.get("e.force:navigateToURL");
-        urlEvent.setParams({
-            "url": "/apex/ContactsTable?dateFrom=" + dateFrom + "&dateTo=" + dateTo + "&type=" + type + "&recordId=" + accountId
-        });
-
-        urlEvent.fire();
+        var url = "/apex/ContactsTable?dateFrom=" + dateFrom + "&dateTo=" + dateTo + "&type=" + type + "&recordId=" + accountId;
+        window.open(url, '_blank');
     }
 })
