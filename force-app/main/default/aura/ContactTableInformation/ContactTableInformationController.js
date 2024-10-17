@@ -1,11 +1,5 @@
 ({
     init : function(component) {    
-        // set record ID from URL
-        var params = new URLSearchParams(window.location.search);
-        var recordId = params.get('c__recordId');
-        component.set("v.recordId", recordId);
-        console.log("Record ID after setting: " + recordId);
-
         component.set("v.columns", [
             {label:"First Name", fieldName:"FirstName", type:"text"},
             {label:"Last Name", fieldName:"LastName", type:"text"},
@@ -77,9 +71,5 @@
         });
 
         urlEvent.fire();
-    },
-
-    refresh : function() {
-        $A.get('e.force:refreshView').fire();
     }
 })
