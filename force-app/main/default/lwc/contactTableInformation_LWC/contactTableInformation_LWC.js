@@ -1,6 +1,10 @@
 import { LightningElement, api, wire, track } from 'lwc';
 import getFilteredContacts from '@salesforce/apex/ContactFilterController.getFilteredContacts';
 import getTypePicklistValues from '@salesforce/apex/ContactFilterController.getTypePicklistValues';
+import { updateRecord } from 'lightning/uiRecordApi';
+import { ShowToastEvent } from 'lightning/platformShowToastEvent';
+import { refreshApex } from '@salesforce/apex';
+import ID_FIELD from '@salesforce/schema/Contact.Id';
 
 export default class ContactTableInformation_LWC extends LightningElement {
     @api recordId;
@@ -12,11 +16,11 @@ export default class ContactTableInformation_LWC extends LightningElement {
     availableTypes = [];
     error;
     columns = [
-        { label: 'First Name', fieldName: 'FirstName' },
-        { label: 'Last Name', fieldName: 'LastName' },
-        { label: 'Email', fieldName: 'Email', type: 'email' },
-        { label: 'Phone', fieldName: 'Phone', type: 'email' },
-        { label: 'Date of Joining', fieldName: 'Date_of_joining_the_company__c', type: 'date' }
+        { label: 'First Name', fieldName: 'FirstName', type: 'text', editable: 'true' },
+        { label: 'Last Name', fieldName: 'LastName', type: 'text', editable: 'true' },
+        { label: 'Email', fieldName: 'Email', type: 'email', editable: 'true' },
+        { label: 'Phone', fieldName: 'Phone', type: 'email', editable: 'true' },
+        { label: 'Date of Joining', fieldName: 'Date_of_joining_the_company__c', type: 'date', editable: 'true' }
     ];
 
     handleInputChange(event) {
@@ -95,5 +99,45 @@ export default class ContactTableInformation_LWC extends LightningElement {
 
     handleRunButtonClick() {
         this.showTable = true;
+    }
+
+    handleSaveContacts(event) {
+        const updatedFields = event.detail.draftValues;
+        console.log("updatedFields: ", event.detail.draftValues)
+
+        const inputs = updatedFields.map(contactDraft => {
+            console.log("updatedcontactDraft:", contactDraft)
+            const fields = Object.assign({}, contactDraft);
+            fields[ID_FIELD.fieldApiName] = contactDraft.Id;
+
+            return { fields };
+        });
+        console.log('inputs: ', inputs)
+        
+        const promises = inputs.map(contactInput => updateRecord(contactInput));
+        Promise.all(promises)
+            .then(() => {
+                this.dispatchEvent(
+                    new ShowToastEvent({
+                        title: 'Success',
+                        message: 'Contacts Updated Successfully!',
+                        variant: 'success'
+                    })
+                );
+                console.log("All contacts updated successfully");
+
+                return refreshApex(this.contacts);
+
+            })
+            .catch(error => {
+                this.dispatchEvent(
+                    new ShowToastEvent({
+                        title: 'Error updating Contacts',
+                        message: 'Cannot update the Contacts: ' + error.message,
+                        variant: 'error'
+                    })
+                );
+                console.error("Error updating contacts: ", error);
+            })
     }
 }
