@@ -19,7 +19,7 @@ export default class ContactTableInformation_LWC extends LightningElement {
         { label: 'First Name', fieldName: 'FirstName', type: 'text', editable: 'true' },
         { label: 'Last Name', fieldName: 'LastName', type: 'text', editable: 'true' },
         { label: 'Email', fieldName: 'Email', type: 'email', editable: 'true' },
-        { label: 'Phone', fieldName: 'Phone', type: 'email', editable: 'true' },
+        { label: 'Phone', fieldName: 'Phone', type: 'email' },
         { label: 'Date of Joining', fieldName: 'Date_of_joining_the_company__c', type: 'date', editable: 'true' }
     ];
 
