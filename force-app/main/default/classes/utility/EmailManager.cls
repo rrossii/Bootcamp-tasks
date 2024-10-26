@@ -14,8 +14,6 @@ public with sharing class EmailManager {
                 invalidEmailsErrorMessage += 
                     'This Contact: {contact.Id} {contact.FirstName} {contact.LastName} has invalid email: {contact.Email}\n';
             }
-
-            System.debug('contact: '+ contact.LastName + contact.Email + invalidEmailsErrorMessage);
         }
         if (contactsHaveInvalidEmails) {
             throw new AuraHandledException(invalidEmailsErrorMessage);
