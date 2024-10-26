@@ -7,12 +7,13 @@ public with sharing class EmailManager {
         }
 
         Boolean contactsHaveInvalidEmails = false;
-        String invalidEmailsErrorMessage = 'Cannot send the emails. The problem is:\n';
+        String invalidEmailsErrorMessage = 'Cannot send the emails.\n';
         for (Contact contact : contactsToSendEmail) {
             if (contact.Email == null || contact.Email == '') {
                 contactsHaveInvalidEmails = true;
                 invalidEmailsErrorMessage += 
-                    'This Contact: {contact.Id} {contact.FirstName} {contact.LastName} has invalid email: {contact.Email}\n';
+                    'This Contact: ' + contact.Id + ' ' + contact.FirstName + ' ' + contact.LastName + 
+                    ' has invalid email: ' + contact.Email + '\n';
             }
         }
         if (contactsHaveInvalidEmails) {
