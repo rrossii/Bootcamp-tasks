@@ -5,6 +5,8 @@ import { updateRecord } from 'lightning/uiRecordApi';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { refreshApex } from '@salesforce/apex';
 import ID_FIELD from '@salesforce/schema/Contact.Id';
+import sendMassEmail from '@salesforce/apex/EmailManager.sendMassEmail';
+
 
 export default class ContactTableInformation_LWC extends LightningElement {
     @api recordId;
@@ -13,6 +15,7 @@ export default class ContactTableInformation_LWC extends LightningElement {
     type = '';
     showTable = false;
     @track contacts = [];
+    @track selectedContacts = [];
     availableTypes = [];
     error;
     columns = [
@@ -138,6 +141,37 @@ export default class ContactTableInformation_LWC extends LightningElement {
                     })
                 );
                 console.error("Error updating contacts: ", error);
+            })
+    }
+
+    handleContactSelection(event) {
+        this.selectedContacts = event.detail.selectedRows; 
+        console.log("selectedContacts", JSON.stringify(this.selectedContacts))
+
+    }
+
+    handleEmailSending() {
+        const contactIds = this.selectedContacts.map(contact => contact.Id);
+        console.log("contactIds", JSON.stringify(contactIds));
+
+        sendMassEmail({contactIds}) 
+            .then(() => {
+                this.dispatchEvent(
+                    new ShowToastEvent({
+                        title: 'Success',
+                        message: 'Sent emails to selected Contacts Successfully!',
+                        variant: 'success'
+                    })
+                );
+                console.log("All contacts updated successfully");
+            }).catch(error => {
+                this.dispatchEvent(
+                    new ShowToastEvent({
+                        title: 'Error sending emails to Contacts',
+                        message: 'Cannot send the emails to selected Contacts: ' + error.body.message,
+                        variant: 'error'
+                    })
+                );
             })
     }
 }

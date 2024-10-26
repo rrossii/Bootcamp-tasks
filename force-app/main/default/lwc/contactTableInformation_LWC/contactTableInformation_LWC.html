@@ -26,9 +26,17 @@
                             key-field="Id"
                             data={contacts}
                             columns={columns}
-                            onsave={handleSaveContacts}>
+                            onsave={handleSaveContacts}
+                            onrowselection={handleContactSelection}>
                     </lightning-datatable>
                 </div>
+                <template if:true={selectedContacts.length}>
+                    <lightning-button 
+                        class="slds-m-left_x-small slds-align_absolute-center" 
+                        variant="brand-outline" label="Send email" title="Send email"
+                        onclick={handleEmailSending}>
+                    </lightning-button>
+                </template>
             </template>
             <template if:false={contacts.length} >
                 <h4 class="slds-m-left_x-small">There are no contacts with these params.</h4>
