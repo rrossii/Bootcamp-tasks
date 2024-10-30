@@ -13,7 +13,7 @@ public with sharing class ContactFilterController {
         contacts = getFilteredContacts(accountId, dateFromParsed, dateToParsed, type);
     }
 
-    @AuraEnabled
+    @AuraEnabled(cacheable=true)
     public static List<Contact> getFilteredContacts(Id accountId, Date dateFrom, Date dateTo, String type) {
         try {
             String queryToGetFilteredContacts = 
@@ -35,7 +35,7 @@ public with sharing class ContactFilterController {
         }
     }
 
-    @AuraEnabled
+    @AuraEnabled(cacheable=true)
     public static List<String> getTypePicklistValues() {
         try {
             Schema.DescribeFieldResult fieldResult = Contact.Type__c.getDescribe();
