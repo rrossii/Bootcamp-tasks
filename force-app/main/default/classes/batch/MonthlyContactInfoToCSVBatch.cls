@@ -49,11 +49,11 @@ public with sharing class ContactInfoToCSVBatch implements Database.Batchable<sO
         Blob csvBlob = Blob.valueOf(csvFile);
 
         ContentVersion contentVersion = new ContentVersion();
-        contentVersion.Title = 'Contacts_Joined_This_Month_' + Date.today();
-        contentVersion.PathOnClient = 'Contacts_Joined_This_Month.csv';
+        contentVersion.Title = 'Contacts_Created_This_Month_' + Date.today();
+        contentVersion.PathOnClient = 'Contacts_Created_This_Month.csv';
         contentVersion.VersionData = csvBlob;
         insert contentVersion;
 
-        System.debug('CSV file with Contact info created');
+        System.debug('CSV file with Contact created this month info created');
     }
 }
