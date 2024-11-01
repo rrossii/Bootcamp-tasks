@@ -1,12 +1,14 @@
 public with sharing class NewContactInfoToCSVBatch implements Database.Batchable<sObject>, Database.Stateful {
     List<String> csvRows = new List<String>(); 
-    
+
     public Database.QueryLocator start(Database.BatchableContext context) {
-        return Database.getQueryLocator('SELECT Id, Name, Email FROM Contact WHERE CreatedDate = LAST_N_DAYS:1');
+        return Database.getQueryLocator(
+            'SELECT Id, FirstName, LastName, Phone, Email, Date_of_joining_the_company__c FROM Contact '+
+            'WHERE CreatedDate = LAST_N_DAYS:1'
+        );
     }
 
     public void execute(Database.BatchableContext context, List<Contact> scope) {
-        System.debug('execute in NewContactInfoToCSVBatch');
         if (scope.isEmpty()) {
             System.debug('empty contacts in NewContactInfoToCSVBatch');
         } else {
