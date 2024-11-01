@@ -38,15 +38,7 @@ public with sharing class ContactFilterController {
     @AuraEnabled(cacheable=true)
     public static List<String> getTypePicklistValues() {
         try {
-            Schema.DescribeFieldResult fieldResult = Contact.Type__c.getDescribe();
-            List<Schema.PicklistEntry> typePicklist = fieldResult.getPicklistValues();
-
-            List<String> types = new List<String>();
-            for (Schema.PicklistEntry typeValue : typePicklist){
-                types.add(typeValue.getLabel());
-            }     
-
-            return types;
+            return ContactUtility.getContactTypeValues();
         } catch (Exception e) {
             throw new AuraHandledException(e.getMessage());
         }
