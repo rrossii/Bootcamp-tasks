@@ -1,4 +1,6 @@
 public with sharing class NewContactInfoToCSVBatch implements Database.Batchable<sObject>, Database.Stateful {
+    List<String> csvRows = new List<String>(); 
+    
     public Database.QueryLocator start(Database.BatchableContext context) {
         return Database.getQueryLocator('SELECT Id, Name, Email FROM Contact WHERE CreatedDate = LAST_N_DAYS:1');
     }
