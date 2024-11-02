@@ -3,7 +3,7 @@ public with sharing class NewContactInfoToCSVBatch implements Database.Batchable
 
     public Database.QueryLocator start(Database.BatchableContext context) {
         return Database.getQueryLocator(
-            'SELECT Id, FirstName, LastName, Phone, Email, Date_of_joining_the_company__c FROM Contact '+
+            'SELECT Id, FirstName, LastName, Phone, Email, Date_of_joining_the_company__c, Type__c FROM Contact '+
             'WHERE CreatedDate = LAST_N_DAYS:1'
         );
     }
@@ -21,8 +21,44 @@ public with sharing class NewContactInfoToCSVBatch implements Database.Batchable
             String email = c.Email != null ? c.Email : '';
             String dayOfJoiningTheCompany = c.Date_of_joining_the_company__c != null ? 
                                             c.Date_of_joining_the_company__c.format() : '';
+            String type = c.Type__c != null ? c.Type__c : '';
 
-            String rowValue = firstName + ',' + lastName + ',' + phone + ',' + email + ',' + dayOfJoiningTheCompany;
+            String numOfDaysSinceJoinedTheCompany = '';
+            if (c.Date_of_joining_the_company__c != null) {
+                switch on c.Type__c {
+                    when 'Type 1' {
+                        try {
+                            numOfDaysSinceJoinedTheCompany = String.valueOf(
+                                DateUtility.calculateWorkDaysBetweenDates(c.Date_of_joining_the_company__c, Date.today()));
+                        } catch (Exception e) {
+                            System.debug('Error in calculateWorkDaysBetweenDates(): ' + e.getMessage());
+                            numOfDaysSinceJoinedTheCompany = 'null';
+                        }
+                    }
+                    when 'Type 2' {
+                        try {
+                            numOfDaysSinceJoinedTheCompany = String.valueOf(
+                                DateUtility.calculateDaysBetweenDates(c.Date_of_joining_the_company__c, Date.today()));
+                        } catch (Exception e) {
+                            System.debug('Error in calculateDaysBetweenDates(): ' + e.getMessage());
+                            numOfDaysSinceJoinedTheCompany = 'null';
+                        }
+                    }
+                    when 'Type 3' {
+                        try {
+                            numOfDaysSinceJoinedTheCompany = String.valueOf(
+                                DateUtility.calculateDaysBetweenDatesMinusOneDayForEachMonth(c.Date_of_joining_the_company__c, Date.today()));
+                        } catch (Exception e) {
+                            System.debug('Error in calculateDaysBetweenDatesMinusOneDayForEachMonth(): ' + e.getMessage());
+                            numOfDaysSinceJoinedTheCompany = 'null';
+                        }
+                    }
+                }
+            }
+
+            String rowValue = firstName + ',' + lastName + ',' 
+                              + phone + ',' + email + ',' 
+                              + dayOfJoiningTheCompany + ',' + numOfDaysSinceJoinedTheCompany + ',' + type;
             csvRows.add(rowValue);
 
             System.debug('rowValue: ' + rowValue);
@@ -36,7 +72,7 @@ public with sharing class NewContactInfoToCSVBatch implements Database.Batchable
             System.debug('csvRows is empty, no data to show.');
         }
         
-        String csvHeader = 'FirstName,LastName,Phone,Email,Date_of_joining_the_company__c\n';
+        String csvHeader = 'FirstName,LastName,Phone,Email,Date of joining the company,Days since joined the company,Type\n';
         String csvFile = csvHeader + String.join(csvRows, '\n');
         Blob csvBlob = Blob.valueOf(csvFile);
 

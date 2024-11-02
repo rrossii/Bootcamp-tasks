@@ -11,7 +11,7 @@ public with sharing class ContactInfoToCSVBatch implements Database.Batchable<sO
         System.debug('lastDayOfMonthDateTime: ' + lastDayOfMonthDateTime);
         
         return Database.getQueryLocator(
-            'SELECT Id, FirstName, LastName, Phone, Email, Date_of_joining_the_company__c FROM Contact ' +
+            'SELECT Id, FirstName, LastName, Phone, Email, Date_of_joining_the_company__c, Type__c FROM Contact ' +
             'WHERE CreatedDate >= :firstDayOfMonthDateTime AND CreatedDate <= :lastDayOfMonthDateTime'
         );
     }
@@ -24,13 +24,48 @@ public with sharing class ContactInfoToCSVBatch implements Database.Batchable<sO
         }
         for (Contact c : scope) {
             String firstName = c.FirstName != null ? c.FirstName : ''; 
-            String lastName = c.LastName != null ? c.LastName : 'null';
+            String lastName = c.LastName != null ? c.LastName : '';
             String phone = c.Phone != null ? c.Phone : '';
             String email = c.Email != null ? c.Email : '';
-            String dayOfJoiningTheCompany = c.Date_of_joining_the_company__c != null ? 
+            String dateOfJoiningTheCompany = c.Date_of_joining_the_company__c != null ? 
                                             c.Date_of_joining_the_company__c.format() : '';
+            String type = c.Type__c != null ? c.Type__c : '';
 
-            String rowValue = firstName + ',' + lastName + ',' + phone + ',' + email + ',' + dayOfJoiningTheCompany;
+            String numOfDaysSinceJoinedTheCompany = '';
+            if (c.Date_of_joining_the_company__c != null) {
+                switch on c.Type__c {
+                    when 'Type 1' {
+                        try {
+                            numOfDaysSinceJoinedTheCompany = String.valueOf(
+                                DateUtility.calculateWorkDaysBetweenDates(c.Date_of_joining_the_company__c, Date.today()));
+                        } catch (Exception e) {
+                            System.debug('Error in calculateWorkDaysBetweenDates(): ' + e.getMessage());
+                            numOfDaysSinceJoinedTheCompany = 'null';
+                        }
+                    }
+                    when 'Type 2' {
+                        try {
+                            numOfDaysSinceJoinedTheCompany = String.valueOf(
+                                DateUtility.calculateDaysBetweenDates(c.Date_of_joining_the_company__c, Date.today()));
+                        } catch (Exception e) {
+                            System.debug('Error in calculateDaysBetweenDates(): ' + e.getMessage());
+                            numOfDaysSinceJoinedTheCompany = 'null';
+                        }
+                    }
+                    when 'Type 3' {
+                        try {
+                            numOfDaysSinceJoinedTheCompany = String.valueOf(
+                                DateUtility.calculateDaysBetweenDatesMinusOneDayForEachMonth(c.Date_of_joining_the_company__c, Date.today()));
+                        } catch (Exception e) {
+                            System.debug('Error in calculateDaysBetweenDatesMinusOneDayForEachMonth(): ' + e.getMessage());
+                            numOfDaysSinceJoinedTheCompany = 'null';
+                        }
+                    }
+                }
+            }
+            String rowValue = firstName + ',' + lastName + ',' 
+                              + phone + ',' + email + ',' 
+                              + dateOfJoiningTheCompany + ',' + numOfDaysSinceJoinedTheCompany + ',' + type;
             csvRows.add(rowValue);
 
             System.debug('rowValue: ' + rowValue);
@@ -44,7 +79,7 @@ public with sharing class ContactInfoToCSVBatch implements Database.Batchable<sO
             System.debug('csvRows is empty, no data to show.');
         }
         
-        String csvHeader = 'FirstName,LastName,Phone,Email,Date_of_joining_the_company__c\n';
+        String csvHeader = 'FirstName,LastName,Phone,Email,Date of joining the company,Days since joined the company,Type\n';
         String csvFile = csvHeader + String.join(csvRows, '\n');
         Blob csvBlob = Blob.valueOf(csvFile);
 
