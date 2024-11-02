@@ -19,27 +19,30 @@ public with sharing class DateUtility {
     }
 
     public static Integer calculateDaysBetweenDates(Date dateFrom, Date dateTo) {
-        if (dateFrom <= dateTo) {
-            return dateFrom.daysBetween(dateTo);
-        } else {
-            return 0; // затичка
-            // throw error and catch later
+        if (dateFrom == null || dateTo == null) {
+            throw new IllegalArgumentException('Both dates must be provided.');
+        } if (dateFrom > dateTo) {
+            throw new IllegalArgumentException('The dateFrom value must not be later than dateTo.');
         }
+
+        return dateFrom.daysBetween(dateTo);
     }
+
     public static Integer calculateWorkDaysBetweenDates(Date dateFrom, Date dateTo) {
+        if (dateFrom == null || dateTo == null) {
+            throw new IllegalArgumentException('Both dates must be provided.');
+        } if (dateFrom > dateTo) {
+            throw new IllegalArgumentException('The dateFrom value must not be later than dateTo.');
+        }
+
         Integer workingDays = 0;
         Date currentDate = dateFrom;
-        if (currentDate <= dateTo) {
-            while (currentDate <= dateTo) {
-                String dayOfWeek = getDayOfWeek(currentDate);
-                if (!WEEKEND.contains(dayOfWeek)) {
-                    workingDays += 1;
-                }
-                currentDate = currentDate.addDays(1);
+        while (currentDate <= dateTo) {
+            String dayOfWeek = getDayOfWeek(currentDate);
+            if (!WEEKEND.contains(dayOfWeek)) {
+                workingDays += 1;
             }
-        } else {
-            return 0; // затичка
-            // throw error and catch later
+            currentDate = currentDate.addDays(1);
         }
 
         return workingDays;
