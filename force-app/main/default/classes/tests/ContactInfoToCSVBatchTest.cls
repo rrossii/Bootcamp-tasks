@@ -39,6 +39,6 @@ private class ContactInfoToCSVBatchTest {
 
         String expectedTitle = 'Contacts_Created_This_Month_' + Date.today();
         List<ContentVersion> csvFile = [SELECT Id, Title FROM ContentVersion WHERE Title LIKE :expectedTitle];
-        System.assertEquals(1, csvFile.size(), 'CSV file with Contact created this month info created');
+        System.assertEquals(1, csvFile.size(), 'Cannot create CSV file with Contacts created this month');
     }
 }

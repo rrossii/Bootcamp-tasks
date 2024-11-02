@@ -39,6 +39,6 @@ private class NewContactInfoToCSVBatchTest {
 
         String expectedTitle = 'Contacts_Created_This_Day_' + Date.today();
         List<ContentVersion> csvFile = [SELECT Id, Title FROM ContentVersion WHERE Title LIKE :expectedTitle];
-        System.assertEquals(1, csvFile.size(), 'CSV file with Contact created this day info created');
+        System.assertEquals(1, csvFile.size(), 'Cannot create CSV file with Contacts created this day');
     }
 }
