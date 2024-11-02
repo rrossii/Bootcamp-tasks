@@ -21,7 +21,7 @@ public with sharing class DateUtility {
     public static Integer calculateDaysBetweenDates(Date dateFrom, Date dateTo) {
         validateDates(dateFrom, dateTo);
 
-        return dateFrom.daysBetween(dateTo) + 1;
+        return dateFrom.daysBetween(dateTo);
     }
 
     public static Integer calculateWorkDaysBetweenDates(Date dateFrom, Date dateTo) {
@@ -38,6 +38,16 @@ public with sharing class DateUtility {
         }
 
         return workingDays;
+    }
+
+    public static Integer calculateDaysBetweenDatesMinusOneDayForEachMonth(Date dateFrom, Date dateTo) {
+        validateDates(dateFrom, dateTo);
+
+        Integer totalDaysBetweenDates = dateFrom.daysBetween(dateTo);
+        Integer monthsBetweenDates = ((dateTo.year() - dateFrom.year()) * 12) + (dateTo.month() - dateFrom.month());
+        Integer daysToSubtract = monthsBetweenDates;
+
+        return totalDaysBetweenDates - daysToSubtract;
     }
 
     private static String getDayOfWeek(Date givenDate) {
