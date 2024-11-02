@@ -19,21 +19,13 @@ public with sharing class DateUtility {
     }
 
     public static Integer calculateDaysBetweenDates(Date dateFrom, Date dateTo) {
-        if (dateFrom == null || dateTo == null) {
-            throw new IllegalArgumentException('Both dates must be provided.');
-        } if (dateFrom > dateTo) {
-            throw new IllegalArgumentException('The dateFrom value must not be later than dateTo.');
-        }
+        validateDates(dateFrom, dateTo);
 
-        return dateFrom.daysBetween(dateTo);
+        return dateFrom.daysBetween(dateTo) + 1;
     }
 
     public static Integer calculateWorkDaysBetweenDates(Date dateFrom, Date dateTo) {
-        if (dateFrom == null || dateTo == null) {
-            throw new IllegalArgumentException('Both dates must be provided.');
-        } if (dateFrom > dateTo) {
-            throw new IllegalArgumentException('The dateFrom value must not be later than dateTo.');
-        }
+        validateDates(dateFrom, dateTo);
 
         Integer workingDays = 0;
         Date currentDate = dateFrom;
@@ -52,4 +44,14 @@ public with sharing class DateUtility {
         DateTime givenDateToDateTime = (DateTime)givenDate;
         return givenDateToDateTime.format('EEEE');
     }
+
+    private static void validateDates(Date dateFrom, Date dateTo) {
+        if (dateFrom == null || dateTo == null) {
+            throw new IllegalArgumentException('Both dates must be provided.');
+        }
+        if (dateFrom > dateTo) {
+            throw new IllegalArgumentException('The dateFrom value must not be later than dateTo.');
+        }
+    }
+    
 }
