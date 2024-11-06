@@ -38,4 +38,15 @@ public with sharing class ContactUtility {
             System.debug('Error while updating Contact Due date field: ' + e.getMessage());
         }
     }
+    public static List<String> getContactTypeValues() {
+        Schema.DescribeFieldResult fieldResult = Contact.Type__c.getDescribe();
+        List<Schema.PicklistEntry> typePicklist = fieldResult.getPicklistValues();
+
+        List<String> types = new List<String>();
+        for (Schema.PicklistEntry typeValue : typePicklist){
+            types.add(typeValue.getLabel());
+        }     
+
+        return types;
+    }
 }
