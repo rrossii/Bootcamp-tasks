@@ -1,48 +1,50 @@
 <template>
     <lightning-card title="Create Contacts">
-        <div class="slds-grid slds-grid_align-space slds-m-left_x-small slds-m-right_x-small">
-            <div class="slds-col">
-                <lightning-input 
-                    data-id="firstName" value={firstName} 
-                    type="text" label="First Name" onchange={handleInputChange}>
-                </lightning-input>
+        <template for:each={contactRows} for:item="contact" for:index="index">
+            <div key={contact.id} class="slds-grid slds-grid_align-space slds-m-left_x-small slds-m-right_x-small" >
+                <div class="slds-col">
+                    <lightning-input 
+                        data-id={contact.id} value={contact.firstName} 
+                        type="text" label="First Name" onchange={handleInputChange}>
+                    </lightning-input>
+                </div>
+                <div class="slds-col">
+                    <lightning-input 
+                        data-id={contact.id} value={contact.lastName} 
+                        type="text" label="Last Name" onchange={handleInputChange}>
+                    </lightning-input>
+                </div>
+                <div class="slds-col">
+                    <lightning-input 
+                        data-id={contact.id} value={contact.dateOfBirth} 
+                        type="date" label="Date of Birth" onchange={handleInputChange}>
+                    </lightning-input>
+                </div>
+                <div class="slds-col">
+                    <lightning-input 
+                        data-id={contact.id} value={contact.email} 
+                        type="email" label="Email" onchange={handleInputChange}>
+                    </lightning-input>
+                </div>
+                <div class="slds-col">
+                    <lightning-input 
+                        data-id={contact.id} value={contact.leadSource} 
+                        type="text" label="Lead Source" onchange={handleInputChange}> 
+                    </lightning-input>
+                </div>
             </div>
-            <div class="slds-col">
-                <lightning-input 
-                    data-id="lastName" value={lastName} 
-                    type="text" label="Last Name" onchange={handleInputChange}>
-                </lightning-input>
-            </div>
-            <div class="slds-col">
-                <lightning-input 
-                    data-id="dateOfBirth" value={dateOfBirth} 
-                    type="date" label="Date of Birth" onchange={handleInputChange}>
-                </lightning-input>
-            </div>
-            <div class="slds-col">
-                <lightning-input 
-                    data-id="email" value={email} 
-                    type="email" label="Email" onchange={handleInputChange}>
-                </lightning-input>
-            </div>
-            <div class="slds-col">
-                <lightning-input 
-                    data-id="leadSource" value={leadSource} 
-                    type="text" label="Lead Source" onchange={handleInputChange}> 
-                </lightning-input>
-            </div>
-        </div>
+        </template>
 
         <div class="slds-grid slds-grid_align-spread">
             <lightning-button 
                 class="slds-m-left_x-small" 
                 variant="brand" label="Add Contact row" title="Add Contact"
-                onclick={handleAddingContactRow}>
+                onclick={handleAddContactRow}>
             </lightning-button>
             <lightning-button 
                 class="slds-m-right_x-small" 
                 variant="brand-outline" label="Create Contacts" title="Create Contacts"
-                onclick={handleCreatingContacts}>
+                onclick={handleCreateContacts}>
             </lightning-button>
         </div>
     </lightning-card>
