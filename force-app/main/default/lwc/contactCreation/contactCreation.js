@@ -63,31 +63,15 @@ export default class ContactCreation extends LightningElement {
                 this.dispatchEvent(
                     new ShowToastEvent({
                         title: 'Error creating Contacts',
-                        message: 'Cannot create contacts. Error: ' + error.body.message,
+                        message: 'Cannot create contacts. Error: ' + error.message,
                         variant: 'error'
                     })
                 );
             })
-        
-        // createContacts({contacts: this.contacts})
-        //     .then(() => {
-        //         this.dispatchEvent(
-        //             new ShowToastEvent({
-        //                 title: 'Success',
-        //                 message: 'Contacts created successfully!',
-        //                 variant: 'success'
-        //             })
-        //         );
-        //     })
-        //     .catch(error => {
-        //         this.dispatchEvent(
-        //             new ShowToastEvent({
-        //                 title: 'Error creating Contacts',
-        //                 message: 'Cannot create contacts. Error: ' + error.body.message,
-        //                 variant: 'error'
-        //             })
-        //         );
-        //     })
     }
 
+    handleDeleteContactRow(event) {
+        const contactIdToDelete = event.target.dataset.id;
+        this.contacts = this.contacts.filter((contact) => String(contact.id) !== contactIdToDelete);
+    }
 }

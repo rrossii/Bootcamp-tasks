@@ -11,7 +11,8 @@
                 <div class="slds-col">
                     <lightning-input 
                         data-id={contact.id} data-field="lastName" value={contact.lastName} 
-                        type="text" label="Last Name" onchange={handleInputChange}>
+                        type="text" label="Last Name" onchange={handleInputChange}
+                        required>
                     </lightning-input>
                 </div>
                 <div class="slds-col">
@@ -23,7 +24,8 @@
                 <div class="slds-col">
                     <lightning-input 
                         data-id={contact.id} data-field="email" value={contact.email} 
-                        type="email" label="Email" onchange={handleInputChange}>
+                        type="email" label="Email" onchange={handleInputChange}
+                        required>
                     </lightning-input>
                 </div>
                 <div class="slds-col">
@@ -31,6 +33,14 @@
                         data-id={contact.id} data-field="leadSource" value={contact.leadSource} 
                         type="text" label="Lead Source" onchange={handleInputChange}> 
                     </lightning-input>
+                </div>
+                <div class="slds-m-top_large">
+                    <lightning-icon 
+                        data-id={contact.id}
+                        icon-name="utility:delete" 
+                        size="small"
+                        onclick={handleDeleteContactRow}>
+                    </lightning-icon>
                 </div>
             </div>
         </template>
