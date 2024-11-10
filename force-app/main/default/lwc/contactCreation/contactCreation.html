@@ -5,43 +5,51 @@
                 <div class="slds-col">
                     <lightning-input 
                         data-id={contact.id} data-field="FirstName" value={contact.FirstName} 
-                        type="text" label="First Name" onchange={handleInputChange}>
+                        type="text" label="First Name" onchange={handleInputChange}
+                        disabled={contact.isExisting}>
                     </lightning-input>
                 </div>
                 <div class="slds-col">
                     <lightning-input 
                         data-id={contact.id} data-field="LastName" value={contact.LastName} 
                         type="text" label="Last Name" onchange={handleInputChange}
+                        disabled={contact.isExisting}
                         required>
                     </lightning-input>
                 </div>
                 <div class="slds-col">
                     <lightning-input 
                         data-id={contact.id} data-field="Birthdate" value={contact.Birthdate} 
-                        type="date" label="Date of Birth" onchange={handleInputChange}>
+                        type="date" label="Date of Birth" onchange={handleInputChange}
+                        disabled={contact.isExisting}>
                     </lightning-input>
                 </div>
                 <div class="slds-col">
                     <lightning-input 
                         data-id={contact.id} data-field="Email" value={contact.Email} 
                         type="email" label="Email" onchange={handleInputChange}
+                        disabled={contact.isExisting}
                         required>
                     </lightning-input>
                 </div>
                 <div class="slds-col">
                     <lightning-input 
                         data-id={contact.id} data-field="LeadSource" value={contact.LeadSource} 
-                        type="text" label="Lead Source" onchange={handleInputChange}> 
+                        type="text" label="Lead Source" onchange={handleInputChange}
+                        disabled={contact.isExisting}> 
                     </lightning-input>
                 </div>
-                <div class="slds-m-top_large">
-                    <lightning-icon 
-                        data-id={contact.id}
-                        icon-name="utility:delete" 
-                        size="small"
-                        onclick={handleDeleteContactRow}>
-                    </lightning-icon>
-                </div>
+                <template if:false={contact.isExisting}>
+                    <div class="slds-m-top_large">
+                        <lightning-icon 
+                            data-id={contact.id}
+                            icon-name="utility:delete" 
+                            size="small"
+                            onclick={handleDeleteContactRow}>
+                        </lightning-icon>
+                    </div>
+                </template>
+
             </div>
         </template>
 

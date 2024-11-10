@@ -25,7 +25,9 @@ export default class ContactCreation extends LightningElement {
 
         if (data) {
             if (data.length > 0) {
-                this.contacts = data;
+                this.contacts = data.map(contact => (
+                    {...contact, isExisting: true}
+                ));
                 console.log('Contacts loaded successfully:', data);
             } else {
                 this.contacts = [];
@@ -51,7 +53,8 @@ export default class ContactCreation extends LightningElement {
             LastName: '',
             Birthdate: '',
             Email: '',
-            LeadSource: ''
+            LeadSource: '',
+            isExisting: false
         };
 
         this.contacts = [...this.contacts, newContact];
