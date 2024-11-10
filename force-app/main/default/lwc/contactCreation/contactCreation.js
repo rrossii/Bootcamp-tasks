@@ -1,19 +1,47 @@
-import { LightningElement, track, api } from 'lwc';
+import { LightningElement, track, api, wire } from 'lwc';
 import CONTACT_OBJECT from '@salesforce/schema/Contact';
 import { createRecord } from 'lightning/uiRecordApi';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import findDuplicateContacts from '@salesforce/apex/ContactService.findDuplicateContacts';
+import getContactsForAccount from '@salesforce/apex/ContactService.getContactsForAccount';
 
 export default class ContactCreation extends LightningElement {
     @api recordId;
-    @track contacts = [{
-        id: 1,
-        FirstName: '',
-        LastName: '',
-        Birthdate: '',
-        Email: '',
-        LeadSource: ''
-    }];
+    contacts = [];
+    // @track contacts = [{
+    //     id: 1,
+    //     FirstName: '',
+    //     LastName: '',
+    //     Birthdate: '',
+    //     Email: '',
+    //     LeadSource: ''
+    // }];
+
+    @wire(getContactsForAccount, {
+        accountId: '$recordId'
+    })
+    loadRelatedContacts({ error, data }) {
+        console.log('Wire response - recordId:', this.recordId, 'data:', data, 'error:', error);
+
+        if (data) {
+            if (data.length > 0) {
+                this.contacts = data;
+                console.log('Contacts loaded successfully:', data);
+            } else {
+                this.contacts = [];
+                console.log("No contacts found.");
+            }
+        } else if (error) {
+            this.contacts = [];
+            this.dispatchEvent(
+                new ShowToastEvent({
+                    title: 'Error',
+                    message: 'An error occurred while loading contacts: ' + error.body.message,
+                    variant: 'error'
+                })
+            );
+        }
+    }
 
     handleAddContactRow() {
         console.log("recordId(accountId): ", this.recordId);
