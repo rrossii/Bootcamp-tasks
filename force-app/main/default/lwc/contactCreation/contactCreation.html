@@ -54,11 +54,18 @@
         </template>
 
         <div class="slds-grid slds-grid_align-spread">
-            <lightning-button 
-                class="slds-m-left_x-small" 
-                variant="brand" label="Add Contact row" title="Add Contact"
-                onclick={handleAddContactRow}>
-            </lightning-button>
+            <template if:false={contactsLengthIsMaximum}>
+                <lightning-button 
+                    class="slds-m-left_x-small" 
+                    variant="brand" label="Add Contact row" title="Add Contact"
+                    onclick={handleAddContactRow}>
+                </lightning-button>
+            </template>
+            <template if:true={contactsLengthIsMaximum}>
+                <p class="slds-m-left_x-small slds-m-top_x-small">
+                    You've already reached the maximum (5) of Contacts per Account.
+                </p>
+            </template>
             <template if:true={hasNonExistingContacts}>
                 <lightning-button 
                     class="slds-m-right_x-small" 

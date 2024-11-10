@@ -142,4 +142,8 @@ export default class ContactCreation extends LightningElement {
     get hasNonExistingContacts() {
         return this.contacts.some(contact => !contact.isExisting);
     }
+
+    get contactsLengthIsMaximum() {
+        return this.contacts.length === 5;
+    }
 }
