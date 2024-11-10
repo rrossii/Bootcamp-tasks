@@ -1,36 +1,36 @@
 <template>
-    <lightning-card title="Create Contacts">
+    <lightning-card title="Create Contacts (max 5 Contacts per Account)">
         <template for:each={contacts} for:item="contact" for:index="index">
             <div key={contact.id} class="slds-grid slds-grid_align-space slds-m-left_x-small slds-m-right_x-small" >
                 <div class="slds-col">
                     <lightning-input 
-                        data-id={contact.id} data-field="firstName" value={contact.firstName} 
+                        data-id={contact.id} data-field="FirstName" value={contact.FirstName} 
                         type="text" label="First Name" onchange={handleInputChange}>
                     </lightning-input>
                 </div>
                 <div class="slds-col">
                     <lightning-input 
-                        data-id={contact.id} data-field="lastName" value={contact.lastName} 
+                        data-id={contact.id} data-field="LastName" value={contact.LastName} 
                         type="text" label="Last Name" onchange={handleInputChange}
                         required>
                     </lightning-input>
                 </div>
                 <div class="slds-col">
                     <lightning-input 
-                        data-id={contact.id} data-field="dateOfBirth" value={contact.dateOfBirth} 
+                        data-id={contact.id} data-field="Birthdate" value={contact.Birthdate} 
                         type="date" label="Date of Birth" onchange={handleInputChange}>
                     </lightning-input>
                 </div>
                 <div class="slds-col">
                     <lightning-input 
-                        data-id={contact.id} data-field="email" value={contact.email} 
+                        data-id={contact.id} data-field="Email" value={contact.Email} 
                         type="email" label="Email" onchange={handleInputChange}
                         required>
                     </lightning-input>
                 </div>
                 <div class="slds-col">
                     <lightning-input 
-                        data-id={contact.id} data-field="leadSource" value={contact.leadSource} 
+                        data-id={contact.id} data-field="LeadSource" value={contact.LeadSource} 
                         type="text" label="Lead Source" onchange={handleInputChange}> 
                     </lightning-input>
                 </div>
