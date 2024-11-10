@@ -76,7 +76,9 @@ export default class ContactCreation extends LightningElement {
     }
 
     handleCreateContacts() {
-        findDuplicateContacts({contactsToCheck: this.contacts})            
+        const contactsToCreate = this.contacts.filter(contact => !contact.isExisting);
+
+        findDuplicateContacts({contactsToCheck: contactsToCreate})            
             .then((existingContacts) => {
                 if (existingContacts.length > 0) {
                     console.log('existingContacts', JSON.stringify(existingContacts));
@@ -94,7 +96,7 @@ export default class ContactCreation extends LightningElement {
                     return;
                 }
 
-                const promises = this.contacts.map(contact => {
+                const promises = contactsToCreate.map(contact => {
                     const fields = {
                         FirstName: contact.FirstName,
                         LastName: contact.LastName,
@@ -135,5 +137,9 @@ export default class ContactCreation extends LightningElement {
     handleDeleteContactRow(event) {
         const contactIdToDelete = event.target.dataset.id;
         this.contacts = this.contacts.filter((contact) => String(contact.id) !== contactIdToDelete);
+    }
+
+    get hasNonExistingContacts() {
+        return this.contacts.some(contact => !contact.isExisting);
     }
 }

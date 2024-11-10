@@ -59,11 +59,13 @@
                 variant="brand" label="Add Contact row" title="Add Contact"
                 onclick={handleAddContactRow}>
             </lightning-button>
-            <lightning-button 
-                class="slds-m-right_x-small" 
-                variant="brand-outline" label="Create Contacts" title="Create Contacts"
-                onclick={handleCreateContacts}>
-            </lightning-button>
+            <template if:true={hasNonExistingContacts}>
+                <lightning-button 
+                    class="slds-m-right_x-small" 
+                    variant="brand-outline" label="Create Contacts" title="Create Contacts"
+                    onclick={handleCreateContacts}>
+                </lightning-button>
+            </template>
         </div>
     </lightning-card>
 </template>
