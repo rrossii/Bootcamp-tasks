@@ -1,12 +1,21 @@
-import { LightningElement, track } from 'lwc';
+import { LightningElement, track, api } from 'lwc';
 import CONTACT_OBJECT from '@salesforce/schema/Contact';
 import { createRecord } from 'lightning/uiRecordApi';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 
 export default class ContactCreation extends LightningElement {
-    @track contacts = [];
+    @api recordId;
+    @track contacts = [{
+        id: 1,
+        firstName: '',
+        lastName: '',
+        dateOfBirth: '',
+        email: '',
+        leadSource: ''}
+    ];
 
     handleAddContactRow() {
+        console.log("recordId(accountId): ", this.recordId);
         const newContact = {
             id: this.contacts.length + 1,
             firstName: '',
@@ -41,7 +50,8 @@ export default class ContactCreation extends LightningElement {
                 LastName: contact.lastName,
                 Birthdate: contact.dateOfBirth,
                 Email: contact.email,
-                LeadSource: contact.leadSource
+                LeadSource: contact.leadSource,
+                AccountId: this.recordId
             };
     
             const recordInput = { apiName: CONTACT_OBJECT.objectApiName, fields };
