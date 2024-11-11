@@ -34,4 +34,9 @@ public with sharing class ContactService {
         System.debug('contacts' + contacts);
         return contacts;
     }
+
+    @AuraEnabled(cacheable=true)
+    public static List<String> getLeadSourceValues() {
+        return ContactUtility.getLeadSourcePicklistValues();
+    }
 }

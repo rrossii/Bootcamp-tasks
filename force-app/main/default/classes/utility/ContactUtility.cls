@@ -38,6 +38,7 @@ public with sharing class ContactUtility {
             System.debug('Error while updating Contact Due date field: ' + e.getMessage());
         }
     }
+
     public static List<String> getContactTypeValues() {
         Schema.DescribeFieldResult fieldResult = Contact.Type__c.getDescribe();
         List<Schema.PicklistEntry> typePicklist = fieldResult.getPicklistValues();
@@ -48,5 +49,17 @@ public with sharing class ContactUtility {
         }     
 
         return types;
+    }
+
+    public static List<String> getLeadSourcePicklistValues() {
+        Schema.DescribeFieldResult fieldResult = Contact.LeadSource.getDescribe();
+        List<Schema.PicklistEntry> leadSourcePicklist = fieldResult.getPicklistValues();
+
+        List<String> leadSourceValues = new List<String>();
+        for (Schema.PicklistEntry leadSource : leadSourcePicklist){
+            leadSourceValues.add(leadSource.getLabel());
+        }     
+
+        return leadSourceValues;
     }
 }

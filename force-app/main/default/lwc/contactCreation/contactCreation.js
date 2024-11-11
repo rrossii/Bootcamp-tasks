@@ -4,10 +4,12 @@ import { createRecord } from 'lightning/uiRecordApi';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import findDuplicateContacts from '@salesforce/apex/ContactService.findDuplicateContacts';
 import getContactsForAccount from '@salesforce/apex/ContactService.getContactsForAccount';
+import getLeadSourceValues from '@salesforce/apex/ContactService.getLeadSourceValues';
 
 export default class ContactCreation extends LightningElement {
     @api recordId;
     contacts = [];
+    leadSourceValues = [];
 
     @wire(getContactsForAccount, {
         accountId: '$recordId'
@@ -34,6 +36,27 @@ export default class ContactCreation extends LightningElement {
                     variant: 'error'
                 })
             );
+        }
+    }
+
+    @wire(getLeadSourceValues)
+    loadLeadSourceValues({error, data}) {
+        if (data && data.length > 0) {
+            this.leadSourceValues = [...data.map(leadSource => ({
+                                    label: leadSource,
+                                    value: leadSource}
+            ))];
+
+            console.log("Got Lead Source picklist successfully", this.leadSourceValues);
+        } else if (data && data.length === 0) {
+            this.leadSourceValues = [];
+
+            console.log("Got no Lead Source picklist.")
+        } else if (error) {
+            this.error = error;
+            this.leadSourceValues = [];
+
+            console.error("Can't get Lead Source picklist: ", error);
         }
     }
 
@@ -68,11 +91,6 @@ export default class ContactCreation extends LightningElement {
             if (String(contact.id) === contactId) {
                 if (fieldName === 'Birthdate') {
                     contact.isChild = this.calculateIsChild(inputValue);
-                }
-                if (contact.isChild) {
-                    if (fieldName === "MotherFirstName") {
-                        contact.MotherFirstName = inputValue;
-                    }
                 }
                 return {...contact, [fieldName]: inputValue};
             }

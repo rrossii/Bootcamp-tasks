@@ -36,11 +36,13 @@
                     </div>
                 </template>
                 <div class="slds-col">
-                    <lightning-input 
+                    <lightning-select
+                        label="Lead Source"
                         data-id={contact.id} data-field="LeadSource" value={contact.LeadSource} 
-                        type="text" label="Lead Source" onchange={handleInputChange}
+                        options={leadSourceValues}
+                        onchange={handleInputChange}
                         disabled={contact.isExisting}> 
-                    </lightning-input>
+                    </lightning-select>
                 </div>
                 <template if:false={contact.isExisting}>
                     <div class="slds-m-top_large">
