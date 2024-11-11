@@ -47,7 +47,13 @@ export default class ContactCreation extends LightningElement {
             Email: '',
             LeadSource: '',
             isExisting: false,
-            isChild: false
+            isChild: false,
+            MotherFirstName: '',
+            MotherLastName: '',
+            MotherEmail: '',
+            FatherFirstName: '',
+            FatherLastName: '',
+            FatherEmail: '',
         };
 
         this.contacts = [...this.contacts, newContact];
@@ -63,12 +69,17 @@ export default class ContactCreation extends LightningElement {
                 if (fieldName === 'Birthdate') {
                     contact.isChild = this.calculateIsChild(inputValue);
                 }
+                if (contact.isChild) {
+                    if (fieldName === "MotherFirstName") {
+                        contact.MotherFirstName = inputValue;
+                    }
+                }
                 return {...contact, [fieldName]: inputValue};
             }
             return contact;
         });
 
-        console.log('contacts:', JSON.stringify(this.contacts));
+        // console.log('contacts:', JSON.stringify(this.contacts));
     }
 
     handleCreateContacts() {
@@ -93,19 +104,85 @@ export default class ContactCreation extends LightningElement {
                 }
 
                 const promises = contactsToCreate.map(contact => {
-                    const fields = {
-                        FirstName: contact.FirstName,
-                        LastName: contact.LastName,
-                        Birthdate: contact.Birthdate,
-                        Email: contact.Email,
-                        LeadSource: contact.LeadSource,
-                        AccountId: this.recordId
-                    };
-            
-                    const recordInput = { apiName: CONTACT_OBJECT.objectApiName, fields };
-                    console.log('recordInput', JSON.stringify(recordInput));
-            
-                    return createRecord(recordInput);
+                    if (!contact.isChild) {
+                        const fields = {
+                            FirstName: contact.FirstName,
+                            LastName: contact.LastName,
+                            Birthdate: contact.Birthdate,
+                            Email: contact.Email,
+                            LeadSource: contact.LeadSource,
+                            AccountId: this.recordId
+                        };
+                
+                        const recordInput = { apiName: CONTACT_OBJECT.objectApiName, fields };
+                        console.log('recordInput', JSON.stringify(recordInput));
+                
+                        return createRecord(recordInput);
+                    } else {
+                        const motherFields = {
+                            FirstName: contact.MotherFirstName,
+                            LastName: contact.MotherLastName,
+                            Email: contact.MotherEmail,
+                            AccountId: this.recordId
+                        }
+                        const fatherFields = {
+                            FirstName: contact.FatherFirstName,
+                            LastName: contact.FatherLastName,
+                            Email: contact.FatherEmail,
+                            AccountId: this.recordId
+                        }
+
+                        const motherRecordInput = { apiName: CONTACT_OBJECT.objectApiName, fields: motherFields };
+                        const fatherRecordInput = { apiName: CONTACT_OBJECT.objectApiName, fields: fatherFields };
+
+                        console.log('motherRecordInput', JSON.stringify(motherRecordInput));
+
+                        const createMotherPromise = createRecord(motherRecordInput);
+                        const createFatherPromise = createRecord(fatherRecordInput);
+
+                        return Promise.all([createMotherPromise, createFatherPromise])
+                            .then(([motherData, fatherData]) => {
+                                if (motherData && fatherData) {
+                                    const childFields = {
+                                        FirstName: contact.FirstName,
+                                        LastName: contact.LastName,
+                                        Birthdate: contact.Birthdate,
+                                        Email: motherData.fields.Email.value,
+                                        LeadSource: contact.LeadSource,
+                                        AccountId: this.recordId,
+                                        Mother__c: motherData.id,
+                                        Father__c: fatherData.id 
+                                    };
+                                    const childRecordInput = { apiName: CONTACT_OBJECT.objectApiName, fields: childFields };
+    
+                                    console.log('childRecordInput', JSON.stringify(childRecordInput));
+    
+                                    return createRecord(childRecordInput)
+                                        .then((childData) => {
+                                            console.log('Child contact created:', JSON.stringify(childData));
+                                        })
+                                        .catch(error => {
+                                            this.dispatchEvent(
+                                                new ShowToastEvent({
+                                                    title: "Error creating Child Contacts",
+                                                    message: 'Cannot create child contacts. Error: ' + error.body.message,
+                                                    variant: 'error'
+                                                })
+                                            );
+                                        })
+                                }
+                            
+                            })
+                            .catch(error => {
+                                this.dispatchEvent(
+                                    new ShowToastEvent({
+                                        title: "Error creating Parents' Contacts",
+                                        message: 'Cannot create parents contacts. Error: ' + error.body.message,
+                                        variant: 'error'
+                                    })
+                                );
+                            })
+                    }
                 });
     
                 Promise.all(promises)
@@ -122,7 +199,7 @@ export default class ContactCreation extends LightningElement {
                         this.dispatchEvent(
                             new ShowToastEvent({
                                 title: 'Error creating Contacts',
-                                message: 'Cannot create contacts. Error: ' + error.message,
+                                message: 'Cannot create contacts. Error: ' + error.body.message,
                                 variant: 'error'
                             })
                         );

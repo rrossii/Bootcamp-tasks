@@ -24,14 +24,16 @@
                         disabled={contact.isExisting}>
                     </lightning-input>
                 </div>
-                <div class="slds-col">
-                    <lightning-input 
-                        data-id={contact.id} data-field="Email" value={contact.Email} 
-                        type="email" label="Email" onchange={handleInputChange}
-                        disabled={contact.isExisting}
-                        required>
-                    </lightning-input>
-                </div>
+                <template if:false={contact.isChild}>
+                    <div class="slds-col">
+                        <lightning-input 
+                            data-id={contact.id} data-field="Email" value={contact.Email} 
+                            type="email" label="Email" onchange={handleInputChange}
+                            disabled={contact.isExisting}
+                            required>
+                        </lightning-input>
+                    </div>
+                </template>
                 <div class="slds-col">
                     <lightning-input 
                         data-id={contact.id} data-field="LeadSource" value={contact.LeadSource} 
@@ -49,11 +51,54 @@
                         </lightning-icon>
                     </div>
                 </template>
-
             </div>
+            <template if:true={contact.isChild}>
+                <div key={contact.id} class="slds-grid slds-grid_align-end slds-m-right_x-small">
+                    <div class="slds-col">
+                        <lightning-input 
+                            data-id={contact.id} data-field="MotherFirstName" value={contact.MotherFirstName} 
+                            type="text" label="Mother's first name" onchange={handleInputChange}>
+                        </lightning-input>
+                    </div>
+                    <div class="slds-col">
+                        <lightning-input 
+                            data-id={contact.id} data-field="MotherLastName" value={contact.MotherLastName} 
+                            type="text" label="Mother's last name" onchange={handleInputChange}>
+                        </lightning-input>
+                    </div>
+                    <div class="slds-col">
+                        <lightning-input 
+                            data-id={contact.id} data-field="MotherEmail" value={contact.MotherEmail} 
+                            type="email" label="Mother's Email" onchange={handleInputChange}
+                            required>
+                        </lightning-input>
+                    </div>
+                </div>
+                <div key={contact.id} class="slds-grid slds-grid_align-end slds-m-right_x-small">
+                    <div class="slds-col">
+                        <lightning-input 
+                            data-id={contact.id} data-field="FatherFirstName" value={contact.FatherFirstName} 
+                            type="text" label="Father's first name" onchange={handleInputChange}>
+                        </lightning-input>
+                    </div>
+                    <div class="slds-col">
+                        <lightning-input 
+                            data-id={contact.id} data-field="FatherLastName" value={contact.FatherLastName} 
+                            type="text" label="Father's last name" onchange={handleInputChange}>
+                        </lightning-input>
+                    </div>
+                    <div class="slds-col">
+                        <lightning-input 
+                            data-id={contact.id} data-field="FatherEmail" value={contact.FatherEmail} 
+                            type="email" label="Father's Email" onchange={handleInputChange}
+                            required>
+                        </lightning-input> 
+                    </div>
+                </div>
+            </template>
         </template>
 
-        <div class="slds-grid slds-grid_align-spread">
+        <div class="slds-grid slds-grid_align-spread slds-m-top_x-small">
             <template if:false={contactsLengthIsMaximum}>
                 <lightning-button 
                     class="slds-m-left_x-small" 
