@@ -8,14 +8,6 @@ import getContactsForAccount from '@salesforce/apex/ContactService.getContactsFo
 export default class ContactCreation extends LightningElement {
     @api recordId;
     contacts = [];
-    // @track contacts = [{
-    //     id: 1,
-    //     FirstName: '',
-    //     LastName: '',
-    //     Birthdate: '',
-    //     Email: '',
-    //     LeadSource: ''
-    // }];
 
     @wire(getContactsForAccount, {
         accountId: '$recordId'
@@ -54,7 +46,8 @@ export default class ContactCreation extends LightningElement {
             Birthdate: '',
             Email: '',
             LeadSource: '',
-            isExisting: false
+            isExisting: false,
+            isChild: false
         };
 
         this.contacts = [...this.contacts, newContact];
@@ -67,6 +60,9 @@ export default class ContactCreation extends LightningElement {
 
         this.contacts = this.contacts.map(contact => {
             if (String(contact.id) === contactId) {
+                if (fieldName === 'Birthdate') {
+                    contact.isChild = this.calculateIsChild(inputValue);
+                }
                 return {...contact, [fieldName]: inputValue};
             }
             return contact;
@@ -137,6 +133,22 @@ export default class ContactCreation extends LightningElement {
     handleDeleteContactRow(event) {
         const contactIdToDelete = event.target.dataset.id;
         this.contacts = this.contacts.filter((contact) => String(contact.id) !== contactIdToDelete);
+    }
+
+    calculateIsChild(birthdate) {
+        if (!birthdate) {
+            return false;
+        }
+
+        const today = new Date();
+        const birthDate = new Date(birthdate);
+        let age = today.getFullYear() - birthDate.getFullYear();
+        if (today.getMonth() < birthDate.getMonth() || 
+            (today.getMonth() === birthDate.getMonth() && today.getDate() < birthDate.getDate())) {
+                age--;
+        }
+
+        return age < 18;
     }
 
     get hasNonExistingContacts() {
