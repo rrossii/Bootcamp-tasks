@@ -6,7 +6,8 @@
                     <lightning-input 
                         data-id={contact.id} data-field="FirstName" value={contact.FirstName} 
                         type="text" label="First Name" onchange={handleInputChange}
-                        disabled={contact.isExisting}>
+                        disabled={contact.isExisting}
+                        required>
                     </lightning-input>
                 </div>
                 <div class="slds-col">
@@ -57,13 +58,15 @@
                     <div class="slds-col">
                         <lightning-input 
                             data-id={contact.id} data-field="MotherFirstName" value={contact.MotherFirstName} 
-                            type="text" label="Mother's first name" onchange={handleInputChange}>
+                            type="text" label="Mother's first name" onchange={handleInputChange}
+                            required>
                         </lightning-input>
                     </div>
                     <div class="slds-col">
                         <lightning-input 
                             data-id={contact.id} data-field="MotherLastName" value={contact.MotherLastName} 
-                            type="text" label="Mother's last name" onchange={handleInputChange}>
+                            type="text" label="Mother's last name" onchange={handleInputChange}
+                            required>
                         </lightning-input>
                     </div>
                     <div class="slds-col">
@@ -78,13 +81,15 @@
                     <div class="slds-col">
                         <lightning-input 
                             data-id={contact.id} data-field="FatherFirstName" value={contact.FatherFirstName} 
-                            type="text" label="Father's first name" onchange={handleInputChange}>
+                            type="text" label="Father's first name" onchange={handleInputChange}
+                            required>
                         </lightning-input>
                     </div>
                     <div class="slds-col">
                         <lightning-input 
                             data-id={contact.id} data-field="FatherLastName" value={contact.FatherLastName} 
-                            type="text" label="Father's last name" onchange={handleInputChange}>
+                            type="text" label="Father's last name" onchange={handleInputChange}
+                            required>
                         </lightning-input>
                     </div>
                     <div class="slds-col">
