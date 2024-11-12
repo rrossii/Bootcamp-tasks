@@ -101,9 +101,17 @@ export default class ContactCreation extends LightningElement {
     }
 
     handleCreateContacts() {
+        const emailsToCheck = [];
         const contactsToCreate = this.contacts.filter(contact => !contact.isExisting);
 
-        findDuplicateContacts({contactsToCheck: contactsToCreate})            
+        contactsToCreate.forEach(contact => {
+            if (contact.Email) emailsToCheck.push(contact.Email);
+            if (contact.MotherEmail) emailsToCheck.push(contact.MotherEmail);
+            if (contact.FatherEmail) emailsToCheck.push(contact.FatherEmail);
+        });
+        console.log('emailsToCheck ', JSON.stringify(emailsToCheck));
+
+        findDuplicateContacts({emails: emailsToCheck})            
             .then((existingContacts) => {
                 if (existingContacts.length > 0) {
                     console.log('existingContacts', JSON.stringify(existingContacts));

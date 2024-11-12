@@ -1,18 +1,14 @@
 public with sharing class ContactService {
     @AuraEnabled
-    public static List<Contact> findDuplicateContacts(List<Contact> contactsToCheck) {
-        Set<String> emails = new Set<String>();
-        for (Contact contact : contactsToCheck) {
-            if (contact.Email != '' && contact.Email != null) {
-                emails.add(contact.Email);
-            }
-        }
+    public static List<Contact> findDuplicateContacts(List<String> emails) {
+        System.debug('contact emails list in findDuplicateContacts: ' + emails);
 
-        if (!emails.isEmpty()) {
-            System.debug('emails is empty? :' + emails.isEmpty() + 'emails: ' + emails + 'size: ' + emails.size());
+        Set<String> emailsSet = new Set<String>(emails);
+        if (!emailsSet.isEmpty()) {
             List<Contact> contactsWithTheseEmails = [
-                SELECT Id, FirstName, LastName, Email FROM Contact WHERE Email IN :emails
+                SELECT Id, FirstName, LastName, Email FROM Contact WHERE Email IN :emailsSet
             ];
+
             System.debug('contacts with emails' + contactsWithTheseEmails);
             return contactsWithTheseEmails;
         } else {
